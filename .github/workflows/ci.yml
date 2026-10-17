@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Validate SKILL.md frontmatter and plugin manifests
+        run: python scripts/validate_skill.py
+      - name: Adapters in sync with canonical SKILL.md
+        run: python scripts/build_adapters.py --check
+      - name: Gemini TOML parses
+        run: python -c "import tomllib; tomllib.load(open('adapters/gemini/commands/deepen-prompt.toml','rb'))"
+      - name: Shellcheck
+        run: shellcheck install.sh scripts/test_install.sh
+  install:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test install.sh in a temp HOME
+        run: bash scripts/test_install.sh

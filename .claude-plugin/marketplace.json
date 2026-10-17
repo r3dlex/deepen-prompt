@@ -1,0 +1,12 @@
+{
+  "name": "deepen-prompt",
+  "description": "Marketplace for the deepen-prompt agent skill",
+  "owner": { "name": "Andre Burgstahler", "url": "https://github.com/r3dlex" },
+  "plugins": [
+    {
+      "name": "deepen-prompt",
+      "source": "./",
+      "description": "Rewrite a task into a deeper version, not a bigger one."
+    }
+  ]
+}

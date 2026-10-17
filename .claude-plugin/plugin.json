@@ -1,0 +1,10 @@
+{
+  "name": "deepen-prompt",
+  "version": "1.0.0",
+  "description": "Rewrite a task into a deeper version, not a bigger one: expert practice, raw material, real methods, and an outside check. Based on Felix Rieseberg's depth prompt.",
+  "author": { "name": "Andre Burgstahler", "url": "https://github.com/r3dlex" },
+  "homepage": "https://github.com/r3dlex/deepen-prompt",
+  "repository": "https://github.com/r3dlex/deepen-prompt",
+  "license": "MIT",
+  "keywords": ["prompting", "skills", "depth", "agent-skills"]
+}
