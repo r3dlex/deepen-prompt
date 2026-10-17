@@ -28,7 +28,7 @@ inst --tool cursor,gemini --symlink
 [ ! -e "$T/.claude/skills/deepen-prompt" ] || fail "--tool must not install claude"
 
 inst --tool cursor   # re-install over a symlink must copy, not write through it
-[ -d "$T/.cursor/skills/deepen-prompt" ] && [ ! -L "$T/.cursor/skills/deepen-prompt" ] || fail "overwrite symlink"
+if [ -L "$T/.cursor/skills/deepen-prompt" ] || [ ! -d "$T/.cursor/skills/deepen-prompt" ]; then fail "overwrite symlink"; fi
 
 out="$(HOME="$T/dry" "$ROOT/install.sh" --tool claude --dry-run)"
 [ ! -e "$T/dry" ] || fail "dry-run wrote files"
