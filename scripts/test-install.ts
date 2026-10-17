@@ -122,7 +122,10 @@ try {
   const dry = join(T, "dry");
   const r = run(dry, ["claude"], ["dry-run"]);
   if (r.status !== 0) fail(`dry-run exited ${r.status}: ${r.stdout}${r.stderr}`);
-  if (existsSync(dry)) fail(`dry-run wrote files: ${r.stdout}`);
+  // pwsh on Windows may create its own cache under USERPROFILE, so look for our files only.
+  if (existsSync(dry) && (findAny(dry, "deepen-prompt") ?? existsSync(join(dry, ".claude")))) {
+    fail(`dry-run wrote files: ${r.stdout}`);
+  }
   if (!/copy|cp -R/.test(r.stdout)) fail(`dry-run output: ${r.stdout}`);
 
   if (run(T, ["nope"]).status === 0) fail("unknown tool accepted");
