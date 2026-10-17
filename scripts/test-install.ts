@@ -42,6 +42,7 @@ function argv(tools: string[], flags: Flag[]): string[] {
 interface RunResult {
   status: number | null;
   stdout: string;
+  stderr: string;
 }
 
 function run(home: string, tools: string[] = [], flags: Flag[] = []): RunResult {
@@ -51,7 +52,7 @@ function run(home: string, tools: string[] = [], flags: Flag[] = []): RunResult 
     encoding: "utf8",
   });
   if (r.error) throw r.error;
-  return { status: r.status, stdout: r.stdout };
+  return { status: r.status, stdout: r.stdout, stderr: r.stderr };
 }
 
 function fail(msg: string): never {
@@ -120,7 +121,8 @@ try {
 
   const dry = join(T, "dry");
   const r = run(dry, ["claude"], ["dry-run"]);
-  if (r.status !== 0 || existsSync(dry)) fail("dry-run wrote files");
+  if (r.status !== 0) fail(`dry-run exited ${r.status}: ${r.stdout}${r.stderr}`);
+  if (existsSync(dry)) fail(`dry-run wrote files: ${r.stdout}`);
   if (!/copy|cp -R/.test(r.stdout)) fail(`dry-run output: ${r.stdout}`);
 
   if (run(T, ["nope"]).status === 0) fail("unknown tool accepted");
