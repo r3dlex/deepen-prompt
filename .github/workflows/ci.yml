@@ -10,24 +10,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v5
         with:
-          python-version: "3.12"
-      - run: pip install pyyaml
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Type check (tsc --noEmit, strict)
+        run: npm run typecheck
       - name: Validate SKILL.md frontmatter and plugin manifests
-        run: python scripts/validate_skill.py
+        run: npm run validate
       - name: Adapters in sync with canonical SKILL.md
-        run: python scripts/build_adapters.py --check
-      - name: Gemini TOML parses
-        run: python -c "import tomllib; tomllib.load(open('adapters/gemini/commands/deepen-prompt.toml','rb'))"
+        run: npm run check
       - name: Shellcheck
-        run: shellcheck install.sh scripts/test_install.sh
-  install:
+        run: shellcheck install.sh
+      - name: PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $r = Invoke-ScriptAnalyzer -Path install.ps1 -Severity Error,Warning -ExcludeRule PSReviewUnusedParameter,PSUseShouldProcessForStateChangingFunctions  # script-scope params used inside functions; -DryRun replaces ShouldProcess
+          $r | Format-Table -AutoSize
+          if ($r) { exit 1 }
+  install-sh:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
       - name: Test install.sh in a temp HOME
-        run: bash scripts/test_install.sh
+        run: npm run test:install
+  install-ps1:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Test install.ps1 in a temp USERPROFILE
+        run: npm run test:install:ps1

@@ -1,0 +1,24 @@
+{
+  "name": "deepen-prompt",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Agent Skill: rewrite a task into a deeper version, not a bigger one. Based on Felix Rieseberg's depth prompt.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "build": "node scripts/build-adapters.ts",
+    "check": "node scripts/build-adapters.ts --check",
+    "validate": "node scripts/validate-skill.ts",
+    "typecheck": "tsc --noEmit",
+    "test:install": "node scripts/test-install.ts --installer sh",
+    "test:install:ps1": "node scripts/test-install.ts --installer ps1",
+    "test": "npm run typecheck && npm run validate && npm run check && npm run test:install"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "smol-toml": "^1.3.1",
+    "typescript": "^5.7.0",
+    "yaml": "^2.6.1"
+  }
+}

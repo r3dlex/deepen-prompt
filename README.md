@@ -10,7 +10,7 @@ Antigravity, and OpenCode.
 
 This skill packages a prompt by **Felix Rieseberg**, from his essay
 [How to be more ambitious: A tutorial for humans with models](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)
-(13 October 2026):
+(13 October 2026), announced in [his post on X](https://x.com/felixrieseberg/status/2110023283169247623):
 
 > I want a deeper version of this task, not a bigger one. Before rewriting it: (1) say what a top
 > professional in this field would do here that I'm not asking for; (2) name the rawest material
@@ -37,6 +37,8 @@ It refuses to make the task bigger (more sections, more deliverables) and refuse
 
 ## Install
 
+macOS / Linux:
+
 ```bash
 git clone https://github.com/r3dlex/deepen-prompt.git
 cd deepen-prompt
@@ -47,7 +49,24 @@ cd deepen-prompt
 ./install.sh --tool claude --uninstall
 ```
 
-`~/.agents/skills` is read by Codex, Copilot, Cursor, Gemini CLI, and OpenCode, so the default
+Windows (PowerShell 5.1 or 7+); paths go under `%USERPROFILE%`:
+
+```powershell
+git clone https://github.com/r3dlex/deepen-prompt.git
+cd deepen-prompt
+.\install.ps1                          # Claude Code + %USERPROFILE%\.agents\skills
+.\install.ps1 -Tool cursor,gemini      # specific tools
+.\install.ps1 -All -Symlink            # symlinks (needs Developer Mode or admin; falls back to a junction)
+.\install.ps1 -List                    # show tools and paths
+.\install.ps1 -Tool claude -Uninstall
+.\install.ps1 -DryRun                  # print actions only
+```
+
+If script execution is blocked, run `powershell -ExecutionPolicy Bypass -File .\install.ps1 ...` once.
+The flags map one to one: `--tool`/`-Tool`, `--all`/`-All`, `--symlink`/`-Symlink`,
+`--uninstall`/`-Uninstall`, `--dry-run`/`-DryRun`, `--list`/`-List`.
+
+`~/.agents/skills` (`%USERPROFILE%\.agents\skills` on Windows) is read by Codex, Copilot, Cursor, Gemini CLI, and OpenCode, so the default
 install covers most tools at once. Installing into several dirs for the same tool may make the
 skill appear twice there.
 
@@ -106,23 +125,27 @@ skills/deepen-prompt/SKILL.md      canonical skill (edit this)
 skills/deepen-prompt/references/   worked examples, domain cheat sheet
 adapters/                          GENERATED command/prompt files (OpenCode, Copilot, Gemini CLI)
 .claude-plugin/                    Claude Code plugin + marketplace manifests
-scripts/build_adapters.py          regenerates adapters/ from SKILL.md (--check in CI)
-scripts/validate_skill.py          checks frontmatter against the Agent Skills spec
-scripts/test_install.sh            tests install.sh in a temporary HOME
+install.sh / install.ps1           installers for macOS/Linux and Windows (same flags)
+scripts/build-adapters.ts          regenerates adapters/ from SKILL.md (--check in CI)
+scripts/validate-skill.ts          checks frontmatter against the Agent Skills spec
+scripts/test-install.ts            tests install.sh / install.ps1 in a temporary HOME
 docs/                              essay and post drafts
 ```
 
 ## Contributing
 
-Edit only `skills/deepen-prompt/`. Then run:
+Edit only `skills/deepen-prompt/`. Tooling is TypeScript with strict types, run directly by Node 22.18+
+(native type stripping, no build step):
 
 ```bash
-python3 scripts/build_adapters.py
-python3 scripts/validate_skill.py
-bash scripts/test_install.sh
+npm ci
+npm run build              # regenerate adapters/
+npm test                   # tsc --noEmit, validate, sync check, install.sh test
+npm run test:install:ps1   # install.ps1 test (needs pwsh)
 ```
 
-CI fails if `adapters/` is out of sync with the skill.
+CI type-checks, validates, fails if `adapters/` is out of sync with the skill, and tests
+`install.sh` on Ubuntu and macOS and `install.ps1` on Windows.
 
 ## License
 

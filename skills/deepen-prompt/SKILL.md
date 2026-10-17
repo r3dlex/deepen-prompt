@@ -13,7 +13,7 @@ metadata:
 Turn a task into the version a field-leading professional would actually do: same scope, deeper
 work. The output is a short diagnosis plus a rewritten prompt the user can run.
 
-The original prompt, by Felix Rieseberg ([How to be more ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)):
+The original prompt, by Felix Rieseberg ([How to be more ambitious](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/), [post on X](https://x.com/felixrieseberg/status/2110023283169247623)):
 
 > I want a deeper version of this task, not a bigger one. Before rewriting it: (1) say what a top
 > professional in this field would do here that I'm not asking for; (2) name the rawest material
